@@ -1,0 +1,21 @@
+#What do we want
+apiVersion: v1 
+kind: PersistentVolumeClaim               #aa vastu sodhva jaye niche ni value ni storage che?
+metadata:
+  name: mongo-vpc
+spec:
+  storageClassName: cloud-ssd         #cloud ma vadhare use thay, ex=ssd #ahiya label aj apyu
+  accessModes:                        #define kare ke readwrite to single node once. aaj use thay vadhare 
+    - ReadWriteOnce
+  resources:                        #apane ketli space joiye che apde order kariye
+    requests:
+      storage: 5Gi
+#How do we want it to be implemented i.e hostpath,azuredisk,awsebs
+---
+apiVersion: storage.k8s.io/v1 
+kind: StorageClass                #aa parameter keh ke apdi jode su che
+metadata: 
+  name: cloud-ssd         #label kai pan chale
+provisioner: kubernetes.io/aws-ebs
+parameters:
+  type: gp2
