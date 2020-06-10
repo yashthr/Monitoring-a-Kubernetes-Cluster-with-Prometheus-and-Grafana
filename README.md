@@ -67,3 +67,25 @@ You can edit the LoadBalancer service to ClusterIP to save costs in AWS for Prom
     You can have a complete picture of the system usage by viewing 'Kubernetes / Compute Resources / Cluster' Dashboard. You can also   visit 'Node' Dashboard to have node metrics.
     
     The 'USE Method' Dashboard is used for Utilization, Saturation and Errors on the Clusters/Nodes 
+    
+    
+    ------------------------------------------------------------------------------------------------------------------------------------
+    Steps needed to get a full set of data from Prometheus:
+    
+    1: Edit your cluster definition with "kops edit cluster --name ${NAME}"
+
+    2: Find the key called "kubelet:", it will have one entry below it called anonymousAuth: false. You're going to add two further entries so that this section looks like the following:
+
+    kubelet:
+      anonymousAuth: false    
+      authenticationTokenWebhook: true    
+      authorizationMode: Webhook
+
+
+   3: Save your changes. Then "kops update cluster --yes".
+
+   4: You will now need to do a "rolling update", which is where kops will kill each node in turn, and bring up a new node with the new configuration.
+
+kops rolling-update cluster --yes
+
+Sometimes this process hangs - not a problem. Just wait five minutes, and if no progress, "control-C", re-run the command again. Keep doing this until the rolling update reports there is nothing to do.
